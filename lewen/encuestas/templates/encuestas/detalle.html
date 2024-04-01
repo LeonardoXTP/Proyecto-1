@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle</title>
+</head>
+<body>
+    <form action="{% url 'encuestas:voto' pregunta.id %}" method="post">
+        {% csrf_token %}
+        <fieldset>
+            <legend><h1>{{ pregunta.pregunta_p }}</h1></legend>
+            {% if msj_error %} <p><strong>{{ msj_error }}</strong></p> {% endif %}
+            {% for opcion in pregunta.respuesta_set.all %}
+                <input type="radio" name="opcion" id="opcion{{ forloop.counter }}" value="{{ opcion.id }}">
+                <label for="opcion{{ forloop.counter }}">{{ opcion.respuesta }}</label>
+                <br><br>
+            {% endfor %}
+        </fieldset>
+        <br>
+        <input type="submit" value="Enviar">
+    </form>
+    <!-- <h1>{{ pregunta.pregunta_p}}</h1>
+    <ul>
+        {% for opcion in pregunta.respuesta_set.all %}
+            <li>{{ opcion.respuesta }}</li>
+        {% endfor %}
+    </ul> -->
+</body>
+</html>
