@@ -1,17 +1,20 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'encuestas/style.css' %}">
     <title>Pagina 1</title>
 </head>
 <body>
     {% if ultimas_preguntas %}
-        <ul>
+        <ol class="lista">
     {% for p in ultimas_preguntas %}
             <li><a href="{% url 'encuestas:detalle' p.id %}">{{ p.pregunta_p }}</a></li>
     {% endfor %}
-        </ul>
+        </ol>
     {% else %}
         <p>No hay encuestas disponibles</p>
     {% endif %}

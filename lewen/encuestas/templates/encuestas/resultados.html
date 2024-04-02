@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados</title>
+</head>
+<body>
+    <h1>{{ pregunta.pregunta_p }}</h1>
+    <table border="2">
+        {% for opcion in pregunta.respuesta_set.all %}
+            <tr>
+                <td>{{ opcion.respuesta }}</td> 
+                <td>{{ opcion.votos }} voto{{ opcion.votos|pluralize }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{% url 'encuestas:detalle' pregunta.id %}">Responder otra vez</a>
+</body>
+</html>

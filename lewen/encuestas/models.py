@@ -10,7 +10,8 @@ class Pregunta(models.Model):
         return self.pregunta_p
     
     def pub_reciente(self):
-        return self.fecha >= timezone.now() - datetime.timedelta(days=1)
+        ahora = timezone.now()
+        return ahora - datetime.timedelta(days=1) <= self.fecha <= ahora
 
 class Respuesta(models.Model):
     pregunta_r = models.ForeignKey(Pregunta, on_delete=models.CASCADE)

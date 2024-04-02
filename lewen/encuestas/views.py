@@ -1,24 +1,38 @@
+from typing import Any
 from django.db.models import F
+from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, render
-from django.http import Http404, HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.views import generic
+from django.utils import timezone
+
 from .models import Pregunta, Respuesta
-from django.template import loader
 
-def index(request):
-    ultimas_preguntas = Pregunta.objects.order_by("-fecha")[:5]
-    context = {
-        'ultimas_preguntas': ultimas_preguntas,
-    }
-    return render(request, 'encuestas/pagina1.html', context)
+class IndexView(generic.ListView):
+    template_name = 'encuestas/pagina1.html'
+    context_object_name = "ultimas_preguntas"
 
-def detalle(request, pregunta_r_id):
-    pregunta = get_object_or_404(Pregunta, pk=pregunta_r_id)
-    return render(request, 'encuestas/detalle.html', {'pregunta': pregunta})
+    def get_queryset(self):
+        # Devuelve las últimas 5 preguntas publicadas
+        # sin incluir los que se publiquen en el futuro
+        return Pregunta.objects.filter(fecha__lte=timezone.now()).order_by('-fecha')[
+            :5
+        ]
 
-def resultados(request, pregunta_r_id):
-    res = "Estás viendo las respuestas de la pregunta %s."
-    return HttpResponse(res % pregunta_r_id)
+class DetalleView(generic.DetailView):
+    model = Pregunta
+    template_name = 'encuestas/detalle.html'
+
+    def get_queryset(self):
+        """
+        Excluye las preguntas que aún no se han publicado.
+        """
+        return Pregunta.objects.filter(fecha__lte=timezone.now())
+    
+class ResultadosView (generic.DetailView):
+    model = Pregunta
+    template_name = 'encuestas/resultados.html'
 
 def voto(request, pregunta_r_id):
     pregunta = get_object_or_404(Pregunta, pk=pregunta_r_id)
