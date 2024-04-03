@@ -1,6 +1,7 @@
 import datetime
 from django.db import models
 from django.utils import timezone
+from django.contrib import admin
 
 class Pregunta(models.Model):
     pregunta_p = models.CharField(max_length=200)
@@ -8,6 +9,12 @@ class Pregunta(models.Model):
 
     def __str__(self):
         return self.pregunta_p
+    
+    @admin.display(
+        boolean=True,
+        ordering='fecha',
+        description='¿Fue publicado recientemente?',
+    )
     
     def pub_reciente(self):
         ahora = timezone.now()
